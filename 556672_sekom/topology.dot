@@ -1,0 +1,47 @@
+graph dc1 {
+ "leaf1" [function="leaf" os="CumulusCommunity/cumulus-vx" memory="768"  ports=32]
+ "leaf2" [function="leaf" os="CumulusCommunity/cumulus-vx" memory="768"  ports=32]
+ "leaf3" [function="leaf" os="CumulusCommunity/cumulus-vx" memory="768"  ports=32]
+ "leaf4" [function="leaf" os="CumulusCommunity/cumulus-vx" memory="768"  ports=32]
+ "leaf5" [function="leaf" os="CumulusCommunity/cumulus-vx" memory="768"  ports=32]
+ "leaf6" [function="leaf" os="CumulusCommunity/cumulus-vx" memory="768"  ports=32]
+ "spine1" [function="spine" os="CumulusCommunity/cumulus-vx" memory="768"  ports=32]
+ "spine2" [function="spine" os="CumulusCommunity/cumulus-vx" memory="768"  ports=32]
+ "juniper" [function="tor" os="CumulusCommunity/cumulus-vx" memory="768"  ports=32]
+ "oob-mgmt-server" [function="oob-server" ]
+ "oob-mgmt-switch" [function="oob-switch" ]
+ "host1" [function="host" os="yk0/ubuntu-xenial" memory="512"]
+ "host2" [function="host" os="yk0/ubuntu-xenial" memory="512"]
+ "host3" [function="host" os="yk0/ubuntu-xenial" memory="512"]
+ "host4" [function="host" os="yk0/ubuntu-xenial" memory="512"]
+   "leaf1":"swp31" -- "leaf2":"swp31"
+   "leaf1":"swp32" -- "leaf2":"swp32"
+   "leaf1":"swp21" -- "spine1":"swp1"
+   "leaf1":"swp22" -- "spine2":"swp1"
+   "leaf2":"swp21" -- "spine1":"swp2"
+   "leaf2":"swp22" -- "spine2":"swp2"
+   "leaf1":"swp1"  -- "host1":"eth1"
+   "leaf2":"swp1"  -- "host1":"eth2"
+
+   "leaf3":"swp31" -- "leaf4":"swp31"
+   "leaf3":"swp32" -- "leaf4":"swp32"
+   "leaf3":"swp21" -- "spine1":"swp3"
+   "leaf3":"swp22" -- "spine2":"swp3"
+   "leaf4":"swp21" -- "spine1":"swp4"
+   "leaf4":"swp22" -- "spine2":"swp4"
+   "leaf3":"swp1"  -- "host3":"eth1"
+   "leaf4":"swp1"  -- "host3":"eth2"
+
+   "leaf5":"swp31" -- "leaf6":"swp31"
+   "leaf5":"swp32" -- "leaf6":"swp32"
+   "leaf5":"swp21" -- "spine1":"swp5"
+   "leaf5":"swp22" -- "spine2":"swp5"
+   "leaf6":"swp21" -- "spine1":"swp6"
+   "leaf6":"swp22" -- "spine2":"swp6"
+   "leaf5":"swp1"  -- "host2":"eth1"
+   "leaf6":"swp1"  -- "host2":"eth2"
+
+   "leaf1":"swp11" -- "juniper":"swp31"
+   "leaf2":"swp11" -- "juniper":"swp32"
+   "juniper":"swp1" -- "host4":"eth1"
+}
