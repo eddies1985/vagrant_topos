@@ -1,0 +1,81 @@
+auto lo
+iface lo inet loopback
+    address 192.168.255.105/32
+    clagd-vxlan-anycast-ip 192.168.255.56
+
+auto swp1
+iface swp1
+
+auto swp11
+iface swp11
+
+auto swp21
+iface swp21
+
+auto swp22
+iface swp22
+
+auto swp31
+iface swp31
+
+auto swp32
+iface swp32
+
+auto bridge
+iface bridge
+    bridge-ports mpo1 peerlink vni0001
+    bridge-vids 1 10
+    bridge-vlan-aware yes
+
+auto mpo1
+iface mpo1
+    bond-slaves swp1
+    clag-id 1
+
+auto peerlink
+iface peerlink
+    bond-slaves swp31 swp32
+
+auto peerlink.4094
+iface peerlink.4094
+    address 169.254.1.1/30
+    clagd-backup-ip 192.168.200.13 vrf mgmt
+    clagd-peer-ip 169.254.1.2
+    clagd-priority 1000
+    clagd-sys-mac 44:38:39:FF:01:03
+
+auto vagrant
+iface vagrant inet dhcp
+
+auto eth0
+iface eth0 inet dhcp
+ vrf mgmt
+
+auto mgmt
+iface mgmt
+  address 127.0.0.1/8
+  vrf-table auto
+
+auto vlan1
+iface vlan1
+    ip6-forward off
+    ip-forward off
+    vlan-id 1
+    vlan-raw-device bridge
+
+auto vlan10
+iface vlan10
+    ip6-forward off
+    ip-forward off
+    vlan-id 10
+    vlan-raw-device bridge
+
+auto vni0001
+iface vni0001
+    bridge-access 1
+    bridge-arp-nd-suppress on
+    bridge-learning off
+    mstpctl-bpduguard yes
+    mstpctl-portbpdufilter yes
+    vxlan-id 10001
+    vxlan-local-tunnelip 192.168.255.105
