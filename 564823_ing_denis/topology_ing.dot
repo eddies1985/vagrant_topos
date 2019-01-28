@@ -1,0 +1,21 @@
+graph ING {
+ "dmp1" [function="spine" os="CumulusCommunity/cumulus-vx" memory="768"  ports=56]
+ "dmp2" [function="spine" os="CumulusCommunity/cumulus-vx" memory="768"  ports=56]
+ "tor1" [function="leaf" os="CumulusCommunity/cumulus-vx" memory="768"  ports=56]
+ "tor2" [function="leaf" os="CumulusCommunity/cumulus-vx" memory="768"  ports=56]
+ "firewall" [function="tor" os="CumulusCommunity/cumulus-vx" memory="768"  ports=32]
+ "oob-mgmt-server" [function="oob-server" ]
+ "oob-mgmt-switch" [function="oob-switch" ]
+  
+  "dmp1":"swp53" -- "dmp2":"swp53"
+   "dmp1":"swp54" -- "dmp2":"swp54"
+   "tor1":"swp53" -- "tor2":"swp53"
+   "tor1":"swp54" -- "tor2":"swp54"
+   "dmp1":"swp49" -- "tor1":"swp49"
+   "dmp1":"swp50" -- "tor2":"swp49"
+   "dmp2":"swp49" -- "tor1":"swp50"
+   "dmp2":"swp50" -- "tor2":"swp50"
+   "dmp1":"swp47" -- "firewall":"swp1"
+   "dmp2":"swp48" -- "firewall":"swp2"
+
+}

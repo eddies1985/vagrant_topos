@@ -1,0 +1,7 @@
+graph dc1 {
+ "switch1" [function="leaf" os="CumulusCommunity/cumulus-vx" memory="768" config="./helper_scripts/extra_switch_config.sh" ports=56 mgmt_ip=10.254.0.3]
+ "oob-mgmt-server" [function="oob-server" mgmt_ip=10.254.0.1 ]
+ "oob-mgmt-switch" [function="oob-switch" mgmt_ip=10.254.0.2 ]
+
+}
+

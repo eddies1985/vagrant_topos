@@ -1,0 +1,299 @@
+auto vagrant
+iface vagrant inet dhcp
+
+auto eth0
+iface eth0 inet dhcp
+ vrf mgmt
+
+auto mgmt
+iface mgmt
+  address 127.0.0.1/8
+  vrf-table auto
+
+auto lo
+iface lo inet loopback
+   address 10.40.40.2/32
+   clagd-vxlan-anycast-ip 10.100.100.12
+
+###############
+# VRFs / L3VNI
+###############
+
+auto untrusted
+iface untrusted
+    vrf-table auto
+
+
+auto trusted
+iface trusted
+    vrf-table auto
+
+
+auto IPCtrusted
+iface IPCtrusted
+    vrf-table auto
+
+auto vni404013
+iface vni404013
+    mtu 8950
+    bridge-access 4013 
+    bridge-arp-nd-suppress on
+    bridge-learning off
+    vxlan-id 404013
+    vxlan-local-tunnelip 10.40.40.2 
+
+auto dummysvi404013
+iface dummysvi404013
+    mtu 8950
+    hwaddress 44:38:39:FF:01:02
+    vlan-id 4013
+    vlan-raw-device bridge
+    vrf untrusted
+
+auto vni404014
+iface vni404014
+    mtu 8950
+    bridge-access 4014 
+    bridge-arp-nd-suppress on
+    bridge-learning off
+    vxlan-id 404014
+    vxlan-local-tunnelip 10.40.40.2 
+
+auto dummysvi404014
+iface dummysvi404014
+    mtu 8950
+    hwaddress 44:38:39:FF:01:02
+    vlan-id 4014
+    vlan-raw-device bridge
+    vrf trusted
+
+auto vni404001
+iface vni404001
+    mtu 8950
+    bridge-access 4001 
+    bridge-arp-nd-suppress on
+    bridge-learning off
+    vxlan-id 404001
+    vxlan-local-tunnelip 10.40.40.2 
+
+auto dummysvi404001
+iface dummysvi404001
+    mtu 8950
+    hwaddress 44:38:39:FF:01:02
+    vlan-id 4001
+    vlan-raw-device bridge
+    vrf IPCtrusted
+
+###############
+# Bridge / Vlans
+###############
+
+
+auto bridge
+iface bridge
+  bridge-vlan-aware yes
+bridge-ports swp21 swp20 swp23 swp22 swp10 swp11 swp12 swp39 swp13 swp43 swp42 swp41 swp40 swp44 peerlink vni10123 vni404013 vni10101 vni10102 vni101000 vni101001 vni101002 vni101003 vni10200 vni404014 vni10115 vni102011 vni404001 vni102013
+bridge-vids 123 101 102 1000 1001 1002 1003 200 115 2011 2013
+
+###############
+# MLAG
+###############
+
+auto peerlink
+iface peerlink
+  bond-slaves swp53 swp54
+  mtu 9216
+
+auto peerlink.4094
+iface peerlink.4094
+  address 169.254.1.2/30
+  clagd-peer-ip 169.254.1.1
+  clagd-backup-ip 192.168.200.5 vrf mgmt
+  clagd-sys-mac 44:38:39:FF:01:02
+ # clagd-args --initDelay 180
+auto peerlink.4032
+iface peerlink.4032
+ address 169.251.1.14/30
+ vrf IPCtrusted
+auto peerlink.4042
+iface peerlink.4042
+ address 169.254.1.14/30
+ vrf untrusted
+auto peerlink.4031
+iface peerlink.4031
+ address 169.252.1.14/30
+ vrf trusted
+  
+###############
+# Backbone ports
+###############
+
+auto swp49
+iface swp49
+   mtu 9216
+auto swp50
+iface swp50
+   mtu 9216
+auto peerlink.4094
+iface peerlink.4094
+   mtu 9216
+
+###############
+# L2 VNIs
+###############
+
+auto vni10123
+iface vni10123
+  mtu 9000
+  vxlan-id 10123
+  vxlan-local-tunnelip 10.40.40.2
+  bridge-access 123
+  bridge-learning off
+  mstpctl-bpduguard yes
+  mstpctl-portbpdufilter yes
+  bridge-arp-nd-suppress on
+  
+auto vni10101
+iface vni10101
+  mtu 9000
+  vxlan-id 10101
+  vxlan-local-tunnelip 10.40.40.2
+  bridge-access 101
+  bridge-learning off
+  mstpctl-bpduguard yes
+  mstpctl-portbpdufilter yes
+  bridge-arp-nd-suppress on
+  
+auto vni10102
+iface vni10102
+  mtu 9000
+  vxlan-id 10102
+  vxlan-local-tunnelip 10.40.40.2
+  bridge-access 102
+  bridge-learning off
+  mstpctl-bpduguard yes
+  mstpctl-portbpdufilter yes
+  bridge-arp-nd-suppress on
+  
+auto vni101000
+iface vni101000
+  mtu 9000
+  vxlan-id 101000
+  vxlan-local-tunnelip 10.40.40.2
+  bridge-access 1000
+  bridge-learning off
+  mstpctl-bpduguard yes
+  mstpctl-portbpdufilter yes
+  bridge-arp-nd-suppress on
+  
+auto vni101001
+iface vni101001
+  mtu 9000
+  vxlan-id 101001
+  vxlan-local-tunnelip 10.40.40.2
+  bridge-access 1001
+  bridge-learning off
+  mstpctl-bpduguard yes
+  mstpctl-portbpdufilter yes
+  bridge-arp-nd-suppress on
+  
+auto vni101002
+iface vni101002
+  mtu 9000
+  vxlan-id 101002
+  vxlan-local-tunnelip 10.40.40.2
+  bridge-access 1002
+  bridge-learning off
+  mstpctl-bpduguard yes
+  mstpctl-portbpdufilter yes
+  bridge-arp-nd-suppress on
+  
+auto vni101003
+iface vni101003
+  mtu 9000
+  vxlan-id 101003
+  vxlan-local-tunnelip 10.40.40.2
+  bridge-access 1003
+  bridge-learning off
+  mstpctl-bpduguard yes
+  mstpctl-portbpdufilter yes
+  bridge-arp-nd-suppress on
+  
+auto vni10200
+iface vni10200
+  mtu 9000
+  vxlan-id 10200
+  vxlan-local-tunnelip 10.40.40.2
+  bridge-access 200
+  bridge-learning off
+  mstpctl-bpduguard yes
+  mstpctl-portbpdufilter yes
+  bridge-arp-nd-suppress on
+  
+auto vni10115
+iface vni10115
+  mtu 9000
+  vxlan-id 10115
+  vxlan-local-tunnelip 10.40.40.2
+  bridge-access 115
+  bridge-learning off
+  mstpctl-bpduguard yes
+  mstpctl-portbpdufilter yes
+  bridge-arp-nd-suppress on
+  
+auto vni102011
+iface vni102011
+  mtu 9000
+  vxlan-id 102011
+  vxlan-local-tunnelip 10.40.40.2
+  bridge-access 2011
+  bridge-learning off
+  mstpctl-bpduguard yes
+  mstpctl-portbpdufilter yes
+  bridge-arp-nd-suppress on
+  
+auto vni102013
+iface vni102013
+  mtu 9000
+  vxlan-id 102013
+  vxlan-local-tunnelip 10.40.40.2
+  bridge-access 2013
+  bridge-learning off
+  mstpctl-bpduguard yes
+  mstpctl-portbpdufilter yes
+  bridge-arp-nd-suppress on
+  
+
+###############
+# SVIs
+###############
+
+auto vlan123
+iface vlan123
+    address 192.168.218.3/24
+    vlan-id 123
+    vlan-raw-device bridge
+        address-virtual 00:00:5e:00:01:23 192.168.218.1/24
+        vrf untrusted
+  
+auto vlan200
+iface vlan200
+    address 192.168.130.2/30
+    vlan-id 200
+    vlan-raw-device bridge
+        vrf trusted
+  
+auto vlan2011
+iface vlan2011
+    address 172.12.12.3/28
+    vlan-id 2011
+    vlan-raw-device bridge
+        address-virtual 00:00:5e:00:01:11 172.12.12.1/28
+        vrf IPCtrusted
+  
+auto vlan2013
+iface vlan2013
+    address 192.168.30.5/24
+    vlan-id 2013
+    vlan-raw-device bridge
+        vrf untrusted
